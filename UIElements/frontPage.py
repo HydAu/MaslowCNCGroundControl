@@ -41,6 +41,9 @@ class FrontPage(Screen, MakesmithInitFuncs):
     units = StringProperty("MM")
     gcodeLineNumber = StringProperty('0')
     
+    INCH            = 25.4
+    MILLIMETER       = 1 
+    
     def __init__(self, data, **kwargs):
         super(FrontPage, self).__init__(**kwargs)
         self.data = data
@@ -51,6 +54,22 @@ class FrontPage(Screen, MakesmithInitFuncs):
         self.zReadoutPos    = str(zPos) + " " + units
         self.numericalPosX  = xPos
         self.numericalPosY  = yPos
+    
+    def setTarget(self, xval,yval,zval,units):
+        if self.target[0] == 0 and self.target[1] == 0:
+            print "first run"
+            if units == "MM":
+                self.target[0] = xval
+                self.target[1] = yval
+            elif units == "INCHES":
+                self.target[0] = xval
+                self.target[1] = yval
+            
+            print xval
+            print self.target[0]
+            print self.target[1]
+            
+            
     
     def setUpData(self, data):
         self.gcodecanvas.setUpData(data)
@@ -148,6 +167,7 @@ class FrontPage(Screen, MakesmithInitFuncs):
         target = -1*self.target[0] - float(self.stepsizeval)
         self.data.gcode_queue.put("G00 F" + str(float(self.feedRate)) + " X" + str(target) + " ")
         self.target[0] = self.target[0] + float(self.stepsizeval)
+        print self.target[0]
         
     def right(self):
         self.jmpsize()
